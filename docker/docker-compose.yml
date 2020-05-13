@@ -1,0 +1,50 @@
+version: "3"
+ 
+services:
+ 
+ dsa_mysql:
+  image: "mysql:5.7.24"
+  hostname: "dsa-mysql"
+  command: "--default-authentication-plugin=mysql_native_password"
+  environment:
+   MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+   MYSQL_DATABASE: "${MYSQL_DATABASE}"
+   MYSQL_USER: "${MYSQL_USER}"
+   MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+   PS1: "\\u@\\h:\\w\\$$ "
+
+ dsa_php:
+  build:
+   context: "./php"
+  hostname: "dsa-php"
+  volumes:
+   - "../../app/:/app:consistent"
+  depends_on:
+   - "dsa_mysql"
+  environment:
+   PS1: "\\u@\\h:\\w\\$$ "
+ 
+ dsa_nginx:
+  build:
+   context: "./nginx"
+  hostname: "dsa-nginx"
+  ports:
+   - "${NGINX_PORT_HTTP}:80"
+   - "${NGINX_PORT_HTTPS}:443"
+  volumes:
+   - "../../app/:/app:consistent"
+  depends_on:
+   - "dsa_mysql"
+   - "dsa_php"
+  environment:
+   PS1: "\\u@\\h:\\w\\$$ "
+
+ phpmyadmin:
+  image: phpmyadmin/phpmyadmin
+  links:
+   - dsa_mysql
+  environment:
+   PMA_HOST: dsa_mysql
+   PMA_PORT: 3306
+  ports:
+   - '${PMA_PORT}:80'
