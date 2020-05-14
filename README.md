@@ -1,4 +1,17 @@
 # Docker SF4
+Download the git project docker-sf4
+Go to the folder /app and download your symfony git project
+Copy the .env.dit at .env for the local configuration
+cp .env.dist .env
+Setup  your .env with your parameters
+Build your docker compose
+sudo make -s build
+Initialize your symfony project with composer
+sudo make -s composer
+Create your database schema
+sudo make -s database-force
+if you use Webpack encore, build the file
+sudo make -s encore
 
 ## Generate ssl certificat (self signed):
    

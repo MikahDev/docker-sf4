@@ -12,7 +12,10 @@ database:
 
 database-force:
 	@docker-compose exec -T $(PHP_SERVICE) bin/console doctrine:schema:update --force
- 
+
+encore:
+	@docker-compose run --rm encore yarn build
+
 test:
 	@docker-compose exec -T $(PHP_SERVICE) vendor/bin/php-cs-fixer fix src --rules=@PSR2 --using-cache=no --dry-run --verbose --diff
 	@docker-compose exec -T $(PHP_SERVICE) bin/console security:check
