@@ -1,1 +1,3 @@
 .idea
+/docker/dev/nginx/app_ssl.crt
+/docker/dev/nginx/app_ssl.key

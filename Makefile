@@ -1,4 +1,4 @@
-PHP_SERVICE := dsa_php
+PHP_SERVICE := php
 COMPOSER_ARGS ?= install
  
 build:
@@ -9,6 +9,9 @@ composer:
  
 database:
 	@docker-compose exec -T $(PHP_SERVICE) bin/console doctrine:schema:update
+
+database-force:
+	@docker-compose exec -T $(PHP_SERVICE) bin/console doctrine:schema:update --force
  
 test:
 	@docker-compose exec -T $(PHP_SERVICE) vendor/bin/php-cs-fixer fix src --rules=@PSR2 --using-cache=no --dry-run --verbose --diff
@@ -24,7 +27,7 @@ clean:
 all:
 	@make -s build
 	@make -s composer
-	@make -s database
+	@make -s database-force
 	@make -s test
 	@make -s down
 	@make -s clean
