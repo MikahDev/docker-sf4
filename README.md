@@ -1,41 +1,70 @@
 # Docker SF4
-Download the git project docker-sf4
-Go to the folder /app and download your symfony git project
-Copy the .env.dit at .env for the local configuration
-cp .env.dist .env
-Setup  your .env with your parameters
-Build your docker compose
-sudo make -s build
-Initialize your symfony project with composer
-sudo make -s composer
-Create your database schema
-sudo make -s database-force
-if you use Webpack encore, build the file
-sudo make -s encore
+With this project you can run all your projects Symfony, 4 or 5,  in a docker environment.
 
-## Generate ssl certificat (self signed):
-   
+## Installation
+### Step 1 : Download the docker project
+The first thing to do is to download this git project on your server with the command :
+
 ```shell
-sudo openssl genrsa -out docker/dev/nginx/app_ssl.key 4096
-sudo openssl req -new -x509 -days 365 -key docker/dev/nginx/app_ssl.key -out docker/dev/nginx/app_ssl.crt
+$ git clone https://github.com/MikahDev/docker-symfony-4-5.git
 ```
 
-## Git project download
-For download your symfony project,  you need to add the file in /app with the command :
+### Step 2 : Download your symfony project
+Download your Syfmony git project in the /app folder with the commands :
 ```shell
-cd app/ >> git clone [project git url] .
+$ cd app/
+$ git clone https://github.com/your-username/your-project
 ```
+
+### Step 3 : Set the .env variables
+All your files are here ! now we need to set all the variables in the .env file to run your app.
+In first time copy the .env.dist in .env
+```shell
+$ cp .env.dist .env
+```
+Now set all the variable in your new .env file
+
+| Variable | Description |
+| ------------- |:-------------:|
+| COMPOSE_PROJECT_NAME      | Name of the docker container |
+| SYMFONY_PROJECT_NAME      | the folder name on your app/ directory |
+| APP_ENV | Variable to know the env of your symfony app ("dev", "prod", "test") |
+| MYSQL_DATABASE | The name of the docker database |
+| MYSQL_PORT | The port use for mysql in docker |
+| MYSQL_USER | The user of the docker database |
+| MYSQL_PASSWORD | the password of the docker database |
+| MYSQL_ROOT_PASSWORD | the root password of the docker database  |
+| NGINX_PORT_HTTP |  Nginx port in docker for the http |
+| NGINX_PORT_HTTPS | Nginx port in docker for the https |
+| PMA_PORT | The PhpMyAdmin port in docker  |
+
+### Step 4 : Build the docker-compose
+Now you have set all your parameters, you can build your docker app with the command :
+```shell
+$ make -sC build
+```
+
+### Step 4 : Build the syfmony project
+The docker project run well but we need to generate the symfony composer, the database and the webpack ressources.
+Run  the commands :
+
+```shell
+$ make -sC composer
+$ make -sC database-force
+$ make -sC encore
+```
+
+Your project is now set and operational !
 
 ## Docker command
-```docker
+```shell
 # You can run these individually
-$ make -sC docker/dev/ build
-$ make -sC docker/dev/ composer
-$ make -sC docker/dev/ database
-$ make -sC docker/dev/ test
-$ make -sC docker/dev/ down
-$ make -sC docker/dev/ clean
-    
-# This will cover all the command listed above in one go
-$ make -sC docker/dev/ all
+$ make -sC build
+$ make -sC composer
+$ make -sC database
+$ make -sC encore
+$ make -sC database-force
+$ make -sC test
+$ make -sC down
+$ make -sC clean
 ```
